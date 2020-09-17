@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head >
+   <meta charset="UTF-8">
+   <meta
+       name="viewport"
+       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+   >
+   <meta
+       http-equiv="X-UA-Compatible"
+       content="ie=edge"
+   >
+   <title >One to Many Relation</title >
+</head >
+<body >
+<h3 >Creating the customers and orders tables</h3 >
+<pre >
+   CREATE TABLE customers(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100)
+);
+CREATE TABLE orders(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_date DATE,
+    amount DECIMAL(8,2),
+    customer_id INT,
+    FOREIGN KEY(customer_id) REFERENCES customers(id)
+);
+
+
+</pre >
+<h3 >Inserting some customers and orders</h3 >
+<pre >
+   INSERT INTO customers (first_name, last_name, email)
+      VALUES ('Boy', 'George', 'george@gmail.com'),
+       ('George', 'Michael', 'gm@gmail.com'),
+       ('David', 'Bowie', 'david@gmail.com'),
+       ('Blue', 'Steele', 'blue@gmail.com'),
+       ('Bette', 'Davis', 'bette@aol.com');
+
+INSERT INTO orders (order_date, amount, customer_id)
+   VALUES ('2016/02/10', 99.99, 1),
+       ('2017/11/11', 35.50, 1),
+       ('2014/12/12', 800.67, 2),
+       ('2015/01/03', 12.50, 2),
+       ('1999/04/11', 450.25, 5);
+
+</pre >
+
+<h4 >Finding Orders Placed By George: 2 Step Process</h4 >
+<pre >
+   SELECT id FROM customers WHERE last_name='George';
+   SELECT * FROM orders WHERE customer_id = 1;
+</pre >
+<h4 >Finding Orders Placed By George: Using a subquery</h4 >
+<pre >
+   SELECT * FROM orders WHERE customer_id =
+    (
+        SELECT id FROM customers
+        WHERE last_name='George'
+    );
+</pre >
+<h4 > Cross Join Craziness</h4 >
+<pre >
+   SELECT * FROM customers, orders;
+</pre >
+<p >to get datas from two tables at once, we can join
+    them.</p >
+<h3 style="color: red">INNER JOIN</h3 >
+<h4 >
+   Exemple 1 : to get all the customers who make an
+   orders( with the implicite inner join:
+</h4 >
+<pre >
+      SELECT * FROM customers, orders
+      WHERE customers.id = orders.customer_id;
+</pre >
+<p >or</p >
+<pre >
+   SELECT first_name, last_name, order_date, amount
+   FROM customers, orders
+   WHERE customers.id = orders.customer_id;
+</pre >
+<h4 >
+   Exemple 2 : to get all the customers who make an
+   orders( with the explicite inner join:
+</h4 >
+<pre >
+   SELECT * FROM customers
+      JOIN orders
+         ON customers.id = orders.customer_id;
+</pre >
+<p >or</p >
+<pre >
+   SELECT first_name, last_name, order_date, amount
+      FROM customers
+         JOIN orders
+          ON customers.id = orders.customer_id;
+</pre >
+<p >or</p >
+<pre >
+   SELECT *
+      FROM orders
+         JOIN customers
+             ON customers.id = orders.customer_id;
+</pre >
+<p >we can also add parameter to the outpu we want (like
+    order by, sum, group by and so more...</p >
+<h4 >Exemple: </h4 >
+<ul >
+   <li >
+      order by (show all customers by date orders) :
+      <pre >
+         SELECT first_name, last_name, order_date, amount
+            FROM customers
+               JOIN orders
+                   ON customers.id = orders.customer_id
+         ORDER BY order_date;
+
+      </pre >
+   </li >
+   <li >group by and order by (show all customers with
+        sum of the amount they spend ordey by total spend)
+      <pre >
+   SELECT
+    first_name,
+    last_name,
+       IFNULL(SUM(amount), 0) AS total_spent
+   FROM customers
+      JOIN orders
+       ON customers.id = orders.customer_id
+   GROUP BY orders.customer_id
+   ORDER BY total_spent DESC;
+</pre >
+   </li >
+</ul >
+<h3 style="color: red">LEFT JOIN</h3 >
+<p >let's join two tables with left join</p >
+<pre >
+SELECT *
+FROM customers
+         LEFT JOIN orders
+                   ON customers.id = orders.customer_id;
+</pre >
+<p >
+   let's join datas with their sum (§in case not amount
+   add 0)
+</p >
+<pre >
+   SELECT
+    first_name,
+    last_name,
+    IFNULL(SUM(amount), 0) AS total_spent
+   FROM customers
+      LEFT JOIN orders
+          ON customers.id = orders.customer_id
+   GROUP BY customers.id
+   ORDER BY total_spent;
+</pre >
+</body >
+</html >

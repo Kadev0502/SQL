@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head >
+   <meta charset="UTF-8">
+   <meta
+       name="viewport"
+       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+   >
+   <meta
+       http-equiv="X-UA-Compatible"
+       content="ie=edge"
+   >
+   <title >Prepare the CRUD data</title >
+</head >
+<body >
+<h1 >create cats table</h1 >
+<pre >
+ CREATE TABLE cats
+   (
+   cat_id INT NOT NULL AUTO_INCREMENT,
+   name   VARCHAR(100),
+   breed  VARCHAR(100),
+   age    INT,
+   PRIMARY KEY (cat_id)
+   );
+</pre >
+
+<p >check the table with : <strong >DESC cats; </strong >
+</p >
+<h2>insert datas in the table</h2>
+<pre>
+   INSERT INTO cats(name, breed, age)
+VALUES ('Ringo', 'Tabby', 4),
+       ('Cindy', 'Maine Coon', 10),
+       ('Dumbledore', 'Maine Coon', 11),
+       ('Egg', 'Persian', 4),
+       ('Misty', 'Tabby', 13),
+       ('George Michael', 'Ragdoll', 9),
+       ('Jackson', 'Sphynx', 7);
+</pre>
+
+<h4>sql language is not case sensitive </h4>
+<p>always make a select table before update to be sure e
+   are updating the right data
+</p>
+
+</body >
+</html >
